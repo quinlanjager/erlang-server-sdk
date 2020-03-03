@@ -203,3 +203,15 @@ set_custom_attributes(User, CustomAttributes) when map_size(CustomAttributes) ==
     maps:remove(custom, User);
 set_custom_attributes(User, CustomAttributes) ->
     User#{custom => CustomAttributes}.
+
+-spec normalize_attributes(user()) -> user().
+normalize_attributes(User) ->
+  List = maps:to_list(User),
+  FormattedAttributes = lists:map(fun({first_name, v}) -> {<<"firstName">>, v};
+               ({<<"first_name">>, v}) -> {<<"firstName">>, v};
+               ({last_name, v}) -> {<<"lastName">>, v};
+               ({<<"last_name">>, v}) -> {<<"lastName">>, v};
+               (KeyValuePair) -> KeyValuePair
+            end, List),
+  FormattedMap = maps:from_list(FormattedAttributes),
+  maps:merge(FormattedMap, User#{}).

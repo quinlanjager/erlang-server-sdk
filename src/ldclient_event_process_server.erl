@@ -159,7 +159,8 @@ format_event(
         <<"version">> => Version,
         <<"prereqOf">> => PrereqOf
     },
-    FormattedEvent = format_event_set_user(Kind, User, maybe_set_reason(Event, OutputEvent), InlineUsers, GlobalPrivateAttributes),
+    NormalizedUser = ldclient_user:normalize_attributes(User),
+    FormattedEvent = format_event_set_user(Kind, NormalizedUser, maybe_set_reason(Event, OutputEvent), InlineUsers, GlobalPrivateAttributes),
     {[FormattedEvent|FormattedEvents], InlineUsers, GlobalPrivateAttributes};
 format_event(#{type := identify, timestamp := Timestamp, user := User}, {FormattedEvents, InlineUsers, GlobalPrivateAttributes}) ->
     Kind = <<"identify">>,
@@ -167,7 +168,8 @@ format_event(#{type := identify, timestamp := Timestamp, user := User}, {Formatt
         <<"kind">> => Kind,
         <<"creationDate">> => Timestamp
     },
-    FormattedEvent = format_event_set_user(Kind, User, OutputEvent, InlineUsers, GlobalPrivateAttributes),
+    NormalizedUser = ldclient_user:normalize_attributes(User),
+    FormattedEvent = format_event_set_user(Kind, NormalizedUser, OutputEvent, InlineUsers, GlobalPrivateAttributes),
     {[FormattedEvent|FormattedEvents], InlineUsers, GlobalPrivateAttributes};
 format_event(#{type := index, timestamp := Timestamp, user := User}, {FormattedEvents, InlineUsers, GlobalPrivateAttributes}) ->
     Kind = <<"index">>,
@@ -175,7 +177,8 @@ format_event(#{type := index, timestamp := Timestamp, user := User}, {FormattedE
         <<"kind">> => Kind,
         <<"creationDate">> => Timestamp
     },
-    FormattedEvent = format_event_set_user(Kind, User, OutputEvent, InlineUsers, GlobalPrivateAttributes),
+    NormalizedUser = ldclient_user:normalize_attributes(User),
+    FormattedEvent = format_event_set_user(Kind, NormalizedUser, OutputEvent, InlineUsers, GlobalPrivateAttributes),
     {[FormattedEvent|FormattedEvents], InlineUsers, GlobalPrivateAttributes};
 format_event(#{type := custom, timestamp := Timestamp, key := Key, user := User, data := Data} = Event, {FormattedEvents, InlineUsers, GlobalPrivateAttributes}) ->
     Kind = <<"custom">>,
@@ -185,7 +188,8 @@ format_event(#{type := custom, timestamp := Timestamp, key := Key, user := User,
         <<"key">> => Key,
         <<"data">> => Data
     }),
-    FormattedEvent = format_event_set_user(Kind, User, OutputEvent, InlineUsers, GlobalPrivateAttributes),
+    NormalizedUser = ldclient_user:normalize_attributes(User),
+    FormattedEvent = format_event_set_user(Kind, NormalizedUser, OutputEvent, InlineUsers, GlobalPrivateAttributes),
     {[FormattedEvent|FormattedEvents], InlineUsers, GlobalPrivateAttributes}.
 
 -spec maybe_set_reason(ldclient_event:event(), #{binary() => any()}) -> #{binary() => any()}.
