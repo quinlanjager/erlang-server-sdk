@@ -10,6 +10,7 @@
 -export([new/1]).
 -export([new_from_map/1]).
 -export([get/2]).
+-export([normalize_attributes/1]).
 -export([set/3]).
 -export([set_private_attribute_names/2]).
 -export([scrub/2]).
